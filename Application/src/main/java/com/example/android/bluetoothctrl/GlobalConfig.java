@@ -38,9 +38,8 @@ public class GlobalConfig {
         this.allUUID.add(uuid);
     }
 
-
+    public static final String CMD_SPLIT = "\n";
     public static final String CMD_UP = "up";
-    public static final String CMD_MOVE_STOP = "move0";
     public static final String CMD_DOWN = "down";
     public static final String CMD_LEFT = "left";
     public static final String CMD_RIGHT = "right";
@@ -51,4 +50,6 @@ public class GlobalConfig {
 
     public static final String CMD_RELEASE = "release";  //松开按键
     public static final String CMD_CANCLE = "cancle";  //松开按键
+    public static final String CMD_MOVE_START = "start";
+    public static final String CMD_MOVE_STOP = "move0";
 }

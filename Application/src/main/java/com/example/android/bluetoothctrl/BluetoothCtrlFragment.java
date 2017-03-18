@@ -79,11 +79,6 @@ public class BluetoothCtrlFragment extends Fragment {
      */
     private BluetoothAdapter mBluetoothAdapter = null;
 
-    /**
-     * Member object for the chat services
-     */
-    private BluetoothCtrlService mChatService = null;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +104,7 @@ public class BluetoothCtrlFragment extends Fragment {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
-        } else if (mChatService == null) {
+        } else if (AppContexts.getInstance().mChatService== null) {
             setupChat();
             setupControler();
         }
@@ -118,8 +113,8 @@ public class BluetoothCtrlFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mChatService != null) {
-            mChatService.stop();
+        if (AppContexts.getInstance().mChatService != null) {
+            AppContexts.getInstance().mChatService.stop();
         }
     }
 
@@ -130,11 +125,11 @@ public class BluetoothCtrlFragment extends Fragment {
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-        if (mChatService != null) {
+        if (AppContexts.getInstance().mChatService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService.getState() == BluetoothCtrlService.STATE_NONE) {
+            if (AppContexts.getInstance().mChatService.getState() == BluetoothCtrlService.STATE_NONE) {
                 // Start the Bluetooth chat services
-                mChatService.start();
+                AppContexts.getInstance().mChatService.start();
             }
         }
     }
@@ -256,7 +251,7 @@ public class BluetoothCtrlFragment extends Fragment {
         });
 
         // Initialize the BluetoothCtrlService to perform bluetooth connections
-        mChatService = new BluetoothCtrlService(getActivity(), mHandler);
+        AppContexts.getInstance().mChatService = new BluetoothCtrlService(getActivity(), mHandler);
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
@@ -281,17 +276,17 @@ public class BluetoothCtrlFragment extends Fragment {
      */
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothCtrlService.STATE_CONNECTED) {
+        if (AppContexts.getInstance().mChatService.getState() != BluetoothCtrlService.STATE_CONNECTED) {
             Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Check that there's actually something to send
         if (message.length() > 0) {
-            message += "\n";
+            message += GlobalConfig.CMD_SPLIT;
             // Get the message bytes and tell the BluetoothCtrlService to write
             byte[] send = message.getBytes();
-            mChatService.write(send);
+            AppContexts.getInstance().mChatService.write(send);
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
@@ -451,8 +446,8 @@ public class BluetoothCtrlFragment extends Fragment {
                 UUID uuid = UUID.fromString(str);
                 GlobalConfig.getInstance().setBlueUuid(uuid);
                 //重启服务
-                mChatService.stop();
-                mChatService.start();
+                AppContexts.getInstance().mChatService.stop();
+                AppContexts.getInstance().mChatService.start();
             } catch (Exception e) {
                 Toast.makeText(getActivity(), "invalid uuid:" + tmp[1], Toast.LENGTH_LONG).show();
             }
@@ -473,7 +468,7 @@ public class BluetoothCtrlFragment extends Fragment {
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
-        mChatService.connect(device, secure);
+        AppContexts.getInstance().mChatService.connect(device, secure);
     }
 
     @Override

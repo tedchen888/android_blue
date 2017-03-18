@@ -12,8 +12,12 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.example.android.bluetoothchat.R;
+import com.example.android.bluetoothctrl.AppContexts;
+import com.example.android.bluetoothctrl.BluetoothCtrlService;
+import com.example.android.bluetoothctrl.GlobalConfig;
 
 public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 	private SurfaceHolder sfh;
@@ -25,6 +29,7 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 	private static Bitmap fishBmp[] = new Bitmap[10];
 	Fish fish;
 	Rocker rocker;
+
 	/**
 	 * SurfaceView初始化函数
 	 */
@@ -36,6 +41,7 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 		paint.setColor(Color.RED);
 		paint.setAntiAlias(true);
 		setFocusable(true);
+
 	}
 
 	/**
@@ -80,6 +86,28 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 		}
 	}
 
+	private void sendMessage(String message) {
+		if (null == AppContexts.getInstance().mChatService) {
+			return;
+		}
+		// Check that we're actually connected before trying anything
+		if (AppContexts.getInstance().mChatService.getState() != BluetoothCtrlService.STATE_CONNECTED) {
+			Toast.makeText(getContext(), R.string.not_connected, Toast.LENGTH_SHORT).show();
+			return;
+		}
+		//Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+
+		// Check that there's actually something to send
+		if (message.length() > 0) {
+			message += GlobalConfig.CMD_SPLIT;
+			// Get the message bytes and tell the BluetoothCtrlService to write
+			byte[] send = message.getBytes();
+			AppContexts.getInstance().mChatService.write(send);
+		}
+	}
+
+	String cmd = "";
+	String last_cmd = "";
 	/**
 	 * 触屏事件监听
 	 */
@@ -88,13 +116,47 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 		//当用户手指抬起，应该恢复小圆到初始位置
 		if (event.getAction() == MotionEvent.ACTION_UP) {
 			rocker.reset();
+
+			//发送结束命令
+			sendMessage(GlobalConfig.CMD_MOVE_STOP);
+
 		} else{
 			int pointX = (int) event.getX();
 			int pointY = (int) event.getY();
 			if(event.getAction() == MotionEvent.ACTION_DOWN){
 				rocker.begin(pointX,pointY);
+
+				//发送开始命令
+				sendMessage(GlobalConfig.CMD_MOVE_START);
+
 			}else if(event.getAction() == MotionEvent.ACTION_MOVE){
 				rocker.update(pointX,pointY);
+
+				double d = rocker.degreesByNormalSystem;
+				if ((d >= 0 && d < 25) || (d >= 360-25 && d < 360)) {
+					cmd = "d0";
+				} else if (d >= 25 && d < (90-25)) {
+					cmd = "d45";
+				} else if (d >= (90-25) && d < 90 + 25) {
+					cmd = "d90";
+				} else if (d >= (90+25) && d < (180-25)) {
+					cmd = "d135";
+				} else if (d >= (180-25) && d < 180+25) {
+					cmd = "d180";
+				} else if (d >= (180+25) && d < (270-25)) {
+					cmd = "d225";
+				} else if (d >= (270-25) && d < (270+25)) {
+					cmd = "d270";
+				} else if (d >= (270+25) && d < (360-25)) {
+					cmd = "d315";
+				}
+
+				//根据控制发送命令
+				if (cmd != last_cmd) {
+					sendMessage(cmd);
+					last_cmd = cmd;
+				}
+
 			}
 		}
 		return true;

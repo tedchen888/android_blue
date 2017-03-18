@@ -9,9 +9,9 @@ public class Rocker {
 	double rad = Double.NaN;//当前遥感的弧度
 	int rockerColor = Color.GREEN;
 	//定义两个圆形的中心点坐标与半径
-	private static final float rockerCenterXMarginRight4ScreenWidthPercent = 0.05f;//摇杆右边界宽度相对于屏幕宽度百分比
-	private static final float rockerCenterYMarginBottom4ScreenHeightPercent = 0.05f;//摇杆右边界高度相对于屏幕百分比
-	private static final float rockerR4ScreenWidthPercent = 0.1f;
+	private static final float rockerCenterXMarginRight4ScreenWidthPercent = 0.60f;//摇杆右边界宽度相对于屏幕宽度百分比
+	private static final float rockerCenterYMarginBottom4ScreenHeightPercent = 0.001f;//摇杆右边界高度相对于屏幕百分比
+	private static final float rockerR4ScreenWidthPercent = 0.15f;
 	private float smallCenterX = 120, smallCenterY = 120, smallCenterR = 20;
 	private float BigCenterX = 120, BigCenterY = 120, BigCenterR = 40;
 	Paint paint;
@@ -35,6 +35,7 @@ public class Rocker {
 		canvas.drawCircle(BigCenterX, BigCenterY, BigCenterR, paint);
 		canvas.drawCircle(smallCenterX, smallCenterY, smallCenterR, paint);
 		paint.setColor(Color.BLACK);
+		paint.setTextSize(20);
 		canvas.drawText("原点在左上坐标系下的弧度:"+rad, 20, 20, paint);
 		canvas.drawText("由该弧度计算得出角度:"+(rad*180/Math.PI), 20, 40, paint);
 		canvas.drawText("原点在左下坐标系角度:"+degreesByNormalSystem, 20, 60, paint);
