@@ -23,4 +23,8 @@
         android:showAsAction="never"
         android:title="@string/change_uuid"/>
 
+    <item
+        android:id="@+id/rocker_ctrl"
+        android:showAsAction="never"
+        android:title="@string/rocker_ctrl"/>
 </menu>

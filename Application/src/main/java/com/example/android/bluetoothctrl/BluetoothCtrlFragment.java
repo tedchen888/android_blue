@@ -44,6 +44,7 @@ public class BluetoothCtrlFragment extends Fragment {
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
     private static final int REQUEST_CHOOSE_UUID = 4;
+    private static final int REQUEST_ROCKER_CTRL = 5;
 
     // Layout Views
     //private ListView mConversationView;
@@ -504,6 +505,12 @@ public class BluetoothCtrlFragment extends Fragment {
                 // Launch the UUID Activity to see uuid and choose one
                 Intent serverIntent = new Intent(getActivity(), UUIDListActivity.class);
                 startActivityForResult(serverIntent, REQUEST_CHOOSE_UUID);
+                return true;
+            }
+            case R.id.rocker_ctrl: {
+                // 打开虚拟方向键
+                Intent serverIntent = new Intent(getActivity(), VirtualRockerCtrlActivity.class);
+                startActivityForResult(serverIntent, REQUEST_ROCKER_CTRL);
                 return true;
             }
         }

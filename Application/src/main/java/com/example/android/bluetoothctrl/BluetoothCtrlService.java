@@ -26,6 +26,7 @@ public class BluetoothCtrlService {
     // Debugging
     private static final String TAG = "BluetoothCtrlService";
 
+
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothChatSecure";
     private static final String NAME_INSECURE = "BluetoothChatInsecure";

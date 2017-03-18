@@ -20,12 +20,14 @@
     <string name="button_scan">Scan for devices</string>
     <!-- uuid list activity -->
     <string name="title_uuid_list">All UUID</string>
+    <string name="title_rocker_ctrl">Rocker</string>
 
     <!-- Options Menu -->
     <string name="secure_connect">Connect a device - Secure</string>
     <string name="insecure_connect">Connect a device - Insecure</string>
     <string name="discoverable">Make discoverable</string>
     <string name="change_uuid">Change UUID</string>
+    <string name="rocker_ctrl">Rocker Controller</string>
 
     <string name="btn_up">Up</string>
     <string name="btn_down">Down</string>
