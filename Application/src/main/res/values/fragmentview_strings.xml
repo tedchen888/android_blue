@@ -1,0 +1,5 @@
+
+<resources>
+    <string name="sample_show">Enable</string>
+    <string name="sample_hide">Disable</string>
+</resources>

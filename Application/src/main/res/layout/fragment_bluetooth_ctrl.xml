@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+              android:layout_height="match_parent" >
+
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <EditText
+            android:id="@+id/edit_text_out"
+            android:layout_width="wrap_content"
+            android:layout_height="46dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:background="@color/edittext_color"/>
+
+        <Button
+            android:id="@+id/button_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send" />
+    </LinearLayout>
+
+    <Button
+        android:text="@string/btn_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/button_right"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="11dp"
+        android:id="@+id/button_up"
+        style="@style/base_button_style" />
+
+    <Button
+        android:text="@string/btn_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/button_stop"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/button_down"
+        style="@style/base_button_style"/>
+
+    <Button
+        android:text="@string/btn_light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_light"
+        style="@style/base_button_style"
+        android:layout_above="@+id/button_left"
+        android:layout_alignStart="@+id/button_speed"
+        android:layout_marginBottom="50dp" />
+
+    <Button
+        android:text="@string/btn_sound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:id="@+id/button_sound"
+        style="@style/base_button_style"
+        android:layout_alignBaseline="@+id/button_light"
+        android:layout_alignBottom="@+id/button_light"
+        android:layout_toEndOf="@+id/button_speed" />
+
+    <Button
+        android:text="@string/btn_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_right"
+        style="@style/base_button_style"
+        android:layout_marginBottom="43dp"
+        android:layout_above="@+id/button_down"
+        android:layout_toEndOf="@+id/button_left"
+        android:layout_marginStart="16dp" />
+
+    <Button
+        android:text="@string/btn_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_stop"
+        style="@style/base_button_style"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/button_right"
+        android:layout_marginEnd="42dp" />
+
+    <Button
+        android:text="@string/btn_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_left"
+        style="@style/base_button_style"
+        android:layout_marginStart="11dp"
+        android:layout_alignBaseline="@+id/button_right"
+        android:layout_alignBottom="@+id/button_right"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="@string/btn_speed"
+        android:layout_width="104dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_speed"
+        android:layout_marginLeft="90dp"
+        style="@style/base_button_style"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/button_right"
+        android:layout_marginStart="89dp" />
+
+</RelativeLayout>
