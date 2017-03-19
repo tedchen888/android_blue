@@ -1,5 +1,9 @@
 package com.example.android.bluetoothctrl;
 
+import android.widget.Toast;
+
+import com.example.android.bluetoothchat.R;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -52,4 +56,25 @@ public class GlobalConfig {
     public static final String CMD_CANCLE = "cancle";  //松开按键
     public static final String CMD_MOVE_START = "start";
     public static final String CMD_MOVE_STOP = "move0";
+
+    //发送串口命令
+    public static void SendBluetoothCmd(String cmd) {
+        if (null == AppContexts.getInstance().mChatService) {
+            return;
+        }
+        // Check that we're actually connected before trying anything
+        if (AppContexts.getInstance().mChatService.getState() != BluetoothCtrlService.STATE_CONNECTED) {
+            //Toast.makeText(getContext(), R.string.not_connected, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+
+        // Check that there's actually something to send
+        if (cmd.length() > 0) {
+            cmd += GlobalConfig.CMD_SPLIT;
+            // Get the message bytes and tell the BluetoothCtrlService to write
+            byte[] send = cmd.getBytes();
+            AppContexts.getInstance().mChatService.write(send);
+        }
+    }
 }

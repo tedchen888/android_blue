@@ -23,6 +23,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -173,7 +174,7 @@ public class BluetoothCtrlFragment extends Fragment {
         @Override public void onClick(View v) {
             Toast.makeText(getActivity(), "on click:" + m_message, Toast.LENGTH_SHORT).show();
             VibratorUtil.Vibrate(getActivity(), 100);
-            sendMessage(m_message);
+            GlobalConfig.SendBluetoothCmd(m_message);
         }*/
 
         @Override
@@ -182,19 +183,19 @@ public class BluetoothCtrlFragment extends Fragment {
                 case MotionEvent.ACTION_DOWN:{
                     //Toast.makeText(getActivity(), "on touch down:" + m_cmd, Toast.LENGTH_SHORT).show();
                     VibratorUtil.Vibrate(getActivity(), 100);
-                    sendMessage(m_cmd);
+                    GlobalConfig.SendBluetoothCmd(m_cmd);
                     break;
                 }
                 case MotionEvent.ACTION_UP: {
                     //Toast.makeText(getActivity(), "on touch up:" + m_cmd_over, Toast.LENGTH_SHORT).show();
                     //VibratorUtil.Vibrate(getActivity(), 50);
-                    sendMessage(m_cmd_over);
+                    GlobalConfig.SendBluetoothCmd(m_cmd_over);
                     break;
                 }
                 case MotionEvent.ACTION_CANCEL:{
                     //Toast.makeText(getActivity(), "on touch cancle:" + m_message, Toast.LENGTH_SHORT).show();
                     //VibratorUtil.Vibrate(getActivity(), 50);
-                    sendMessage(m_cmd_over);
+                    GlobalConfig.SendBluetoothCmd(m_cmd_over);
                     break;
                 }
                 default:
@@ -245,7 +246,7 @@ public class BluetoothCtrlFragment extends Fragment {
                 if (null != view) {
                     TextView textView = (TextView) view.findViewById(R.id.edit_text_out);
                     String message = textView.getText().toString();
-                    sendMessage(message);
+                    GlobalConfig.SendBluetoothCmd(message);
                 }
             }
         });
@@ -270,31 +271,6 @@ public class BluetoothCtrlFragment extends Fragment {
     }
 
     /**
-     * Sends a message.
-     *
-     * @param message A string of text to send.
-     */
-    private void sendMessage(String message) {
-        // Check that we're actually connected before trying anything
-        if (AppContexts.getInstance().mChatService.getState() != BluetoothCtrlService.STATE_CONNECTED) {
-            Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Check that there's actually something to send
-        if (message.length() > 0) {
-            message += GlobalConfig.CMD_SPLIT;
-            // Get the message bytes and tell the BluetoothCtrlService to write
-            byte[] send = message.getBytes();
-            AppContexts.getInstance().mChatService.write(send);
-
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
-        }
-    }
-
-    /**
      * The action listener for the EditText widget, to listen for the return key
      */
     private TextView.OnEditorActionListener mWriteListener
@@ -303,7 +279,7 @@ public class BluetoothCtrlFragment extends Fragment {
             // If the action is a key-up event on the return key, send the message
             if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
                 String message = view.getText().toString();
-                sendMessage(message);
+                GlobalConfig.SendBluetoothCmd(message);
             }
             return true;
         }

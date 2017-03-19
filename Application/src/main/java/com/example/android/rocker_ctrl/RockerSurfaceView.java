@@ -1,12 +1,14 @@
 package com.example.android.rocker_ctrl;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -19,7 +21,7 @@ import com.example.android.bluetoothctrl.AppContexts;
 import com.example.android.bluetoothctrl.BluetoothCtrlService;
 import com.example.android.bluetoothctrl.GlobalConfig;
 
-public class MySurfaceView extends SurfaceView implements Callback, Runnable {
+public class RockerSurfaceView extends SurfaceView implements Callback, Runnable {
 	private SurfaceHolder sfh;
 	private Paint paint;
 	private Thread th;
@@ -29,11 +31,13 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 	private static Bitmap fishBmp[] = new Bitmap[10];
 	Fish fish;
 	Rocker rocker;
+    CtrlButton btn_light; //灯光按钮
+    CtrlButton btn_sound; //声音按钮
 
-	/**
+    /**
 	 * SurfaceView初始化函数
 	 */
-	public MySurfaceView(Context context) {
+	public RockerSurfaceView(Context context) {
 		super(context);
 		sfh = this.getHolder();
 		sfh.addCallback(this);
@@ -42,7 +46,11 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 		paint.setAntiAlias(true);
 		setFocusable(true);
 
-	}
+    }
+
+	//public RockerSurfaceView(Context context, AttributeSet attrs){
+	//	super(context,attrs);
+	//}
 
 	/**
 	 * SurfaceView视图创建，响应此函数
@@ -57,11 +65,41 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 		screenH = this.getHeight();
 		rocker = new Rocker(screenW,screenH);
 		flag = true;
+
+        setupCtrButtons();
+
 		//实例线程
 		th = new Thread(this);
 		//启动线程
 		th.start();
 	}
+
+	void setupCtrButtons() {
+        //各个控制按钮的位置
+        float lightbtn_x = this.getWidth() - this.getWidth()*0.1f;
+        float lightbtn_y = this.getHeight() - this.getHeight()*0.4f;
+        btn_light = new CtrlButton(this, R.drawable.light, lightbtn_x, lightbtn_y);
+        btn_light.setListener(new CtrlButtonListener() {
+            @Override
+            public void OnClickListener(Context context, float touchx, float touchy) {
+                super.OnClickListener(context, touchx, touchy);
+                Toast.makeText(context, "on light click", Toast.LENGTH_SHORT).show();
+                GlobalConfig.SendBluetoothCmd(GlobalConfig.CMD_LIGHT);
+            }
+        });
+
+        float sound_x = this.getWidth() - this.getWidth()*0.1f;
+        float sound_y = this.getHeight() - this.getHeight()*0.2f;
+        btn_sound = new CtrlButton(this, R.drawable.sound, sound_x, sound_y);
+        btn_sound.setListener(new CtrlButtonListener() {
+            @Override
+            public void OnClickListener(Context context, float touchx, float touchy) {
+                super.OnClickListener(context, touchx, touchy);
+                Toast.makeText(context, "on sound click", Toast.LENGTH_SHORT).show();
+                GlobalConfig.SendBluetoothCmd(GlobalConfig.CMD_SOUND);
+            }
+        });
+    }
 
 	Matrix matrix = new Matrix();
 	float waterY = 0;
@@ -75,34 +113,16 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 				canvas.drawColor(Color.WHITE);
 				//绘制大圆
 				rocker.draw(canvas);
-				fish.draw(this, canvas, fishBmp,   matrix, waterY);
+				fish.draw(this, canvas, fishBmp, matrix, waterY);
 
+                btn_light.draw(canvas);
+                btn_sound.draw(canvas);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		} finally {
 			if (canvas != null)
 				sfh.unlockCanvasAndPost(canvas);
-		}
-	}
-
-	private void sendMessage(String message) {
-		if (null == AppContexts.getInstance().mChatService) {
-			return;
-		}
-		// Check that we're actually connected before trying anything
-		if (AppContexts.getInstance().mChatService.getState() != BluetoothCtrlService.STATE_CONNECTED) {
-			Toast.makeText(getContext(), R.string.not_connected, Toast.LENGTH_SHORT).show();
-			return;
-		}
-		//Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-
-		// Check that there's actually something to send
-		if (message.length() > 0) {
-			message += GlobalConfig.CMD_SPLIT;
-			// Get the message bytes and tell the BluetoothCtrlService to write
-			byte[] send = message.getBytes();
-			AppContexts.getInstance().mChatService.write(send);
 		}
 	}
 
@@ -114,22 +134,28 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		//当用户手指抬起，应该恢复小圆到初始位置
-		if (event.getAction() == MotionEvent.ACTION_UP) {
+		if (event.getAction() == MotionEvent.ACTION_UP)
+		{
 			rocker.reset();
 
 			//发送结束命令
-			sendMessage(GlobalConfig.CMD_MOVE_STOP);
+			GlobalConfig.SendBluetoothCmd(GlobalConfig.CMD_MOVE_STOP);
 
-		} else{
+		} else {
 			int pointX = (int) event.getX();
 			int pointY = (int) event.getY();
-			if(event.getAction() == MotionEvent.ACTION_DOWN){
-				rocker.begin(pointX,pointY);
 
-				//发送开始命令
-				sendMessage(GlobalConfig.CMD_MOVE_START);
-
-			}else if(event.getAction() == MotionEvent.ACTION_MOVE){
+			if(event.getAction() == MotionEvent.ACTION_DOWN)
+			{
+				if (rocker.begin(pointX,pointY)) { //在摇杆里面按下
+                    //Toast.makeText(getContext(), "start rocker", Toast.LENGTH_SHORT).show();
+                } else {
+                    btn_light.OnLightBtnClick(getContext(), pointX, pointY);
+                    btn_sound.OnLightBtnClick(getContext(), pointX, pointY);
+                }
+			}
+			else if(event.getAction() == MotionEvent.ACTION_MOVE)
+			{
 				rocker.update(pointX,pointY);
 
 				double d = rocker.degreesByNormalSystem;
@@ -153,10 +179,9 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 
 				//根据控制发送命令
 				if (cmd != last_cmd) {
-					sendMessage(cmd);
+                    GlobalConfig.SendBluetoothCmd(cmd);
 					last_cmd = cmd;
 				}
-
 			}
 		}
 		return true;

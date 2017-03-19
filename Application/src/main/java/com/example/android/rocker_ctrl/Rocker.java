@@ -122,12 +122,14 @@ public class Rocker {
 		}
 	}
 
-	public void begin(int pointX,int pointY) {
+	public boolean begin(int pointX,int pointY) {
 		if (Math.sqrt(Math.pow((BigCenterX - pointX), 2) + Math.pow((BigCenterY - pointY), 2)) <= (BigCenterR )) {
 			WORKING = true;
 			update(pointX,pointY);
+			return true;
 		} else{
 			WORKING = false;
+			return false;
 		}
 	}
 }

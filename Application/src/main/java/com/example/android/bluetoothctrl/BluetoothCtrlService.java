@@ -23,6 +23,7 @@ import java.util.UUID;
  * thread for performing data transmissions when connected.
  */
 public class BluetoothCtrlService {
+
     // Debugging
     private static final String TAG = "BluetoothCtrlService";
 

@@ -12,7 +12,7 @@ import java.util.Random;
 public class Fish {
 	//random 
 
-	public Fish(MySurfaceView mySurfaceView, float touchX, float touchY) {
+	public Fish(RockerSurfaceView mySurfaceView, float touchX, float touchY) {
 		x = touchX;
 		y = touchY;
 		degrees = new Random().nextInt(90);
@@ -38,7 +38,7 @@ public class Fish {
 		return rect.contains((int)touchx,(int)touchy);
 	}
 
-	void draw(MySurfaceView view,Canvas canvas,Bitmap[] fishBmp,   Matrix matrix,float waterY ){
+	void draw(RockerSurfaceView view, Canvas canvas, Bitmap[] fishBmp, Matrix matrix, float waterY ){
 		updateFrame();
 		if(view.rocker.WORKING&&!Double.isNaN(view.rocker.degreesByNormalSystem)){
 			degrees  = view.rocker.degreesByNormalSystem;
