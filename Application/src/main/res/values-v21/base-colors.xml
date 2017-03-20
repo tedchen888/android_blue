@@ -4,4 +4,7 @@
     <color name="button_color">#b0b0ff</color>
 
     <color name="edittext_color">#b0e2c6</color>
+
+    <color name="rocker_color">#cedad4</color>
+    <color name="rocker_color_m">#1b5eb4</color>
 </resources>

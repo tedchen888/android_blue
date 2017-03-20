@@ -4,10 +4,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.example.android.bluetoothchat.R;
+
 public class Rocker {
 	double degreesByNormalSystem = Double.NaN;//一般坐标系下的角度
 	double rad = Double.NaN;//当前遥感的弧度
-	int rockerColor = Color.GREEN;
+	int rockerColor = R.color.rocker_color;
+	int rockerColorM = R.color.rocker_color_m;
+
 	//定义两个圆形的中心点坐标与半径
 	private static final float rockerCenterXMarginRight4ScreenWidthPercent = 0.60f;//摇杆右边界宽度相对于屏幕宽度百分比
 	private static final float rockerCenterYMarginBottom4ScreenHeightPercent = 0.001f;//摇杆右边界高度相对于屏幕百分比
@@ -26,13 +30,14 @@ public class Rocker {
 		BigCenterR = screenWidth*rockerR4ScreenWidthPercent;
 		BigCenterX = smallCenterX = screenWidth - BigCenterR*1.5f - rockerCenterXMarginRight4ScreenWidthPercent*screenWidth;
 		BigCenterY = smallCenterY = screenHeight - BigCenterR*1.5f - rockerCenterYMarginBottom4ScreenHeightPercent*screenHeight;
-		smallCenterR = BigCenterR/2;
+		smallCenterR = BigCenterR/3;
 	}
 
 	void draw(Canvas canvas){
 		paint.setColor(rockerColor);
-		paint.setAlpha(0x77);
+		paint.setAlpha(0x10); //0~255透明度值
 		canvas.drawCircle(BigCenterX, BigCenterY, BigCenterR, paint);
+		paint.setColor(rockerColorM);
 		canvas.drawCircle(smallCenterX, smallCenterY, smallCenterR, paint);
 		paint.setColor(Color.BLACK);
 		paint.setTextSize(20);

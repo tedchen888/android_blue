@@ -54,7 +54,7 @@ public class GlobalConfig {
 
     public static final String CMD_RELEASE = "release";  //松开按键
     public static final String CMD_CANCLE = "cancle";  //松开按键
-    public static final String CMD_MOVE_START = "start";
+    public static final String CMD_MOVE_START = "move";
     public static final String CMD_MOVE_STOP = "move0";
 
     //发送串口命令
