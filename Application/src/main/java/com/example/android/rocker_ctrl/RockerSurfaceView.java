@@ -25,7 +25,9 @@ import com.example.android.bluetoothctrl.BluetoothCtrlService;
 import com.example.android.bluetoothctrl.GlobalConfig;
 import com.example.android.common.VibratorUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -43,7 +45,8 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
     CtrlButton btn_sound; //声音按钮
 
 	private SoundPool soundPool;
-	Map<Integer,Integer> map = new HashMap<Integer, Integer>();
+	//Map<Integer,Integer> map = new HashMap<Integer, Integer>();
+	List sound_list = new ArrayList();
 	Random ran = new Random(System.currentTimeMillis());
 
 	/**
@@ -74,8 +77,8 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
 		}
 		//加载音效
 		soundPool= new SoundPool(10, AudioManager.STREAM_SYSTEM,5);
-		map.put(1, soundPool.load(getContext(), R.raw.car_laba, 1));
-		map.put(2, soundPool.load(getContext(), R.raw.car_laba2, 1));
+		sound_list.add(soundPool.load(getContext(), R.raw.car_laba, 1));
+		sound_list.add(soundPool.load(getContext(), R.raw.car_laba2, 1));
 
 		spirit = new GameSpirit(this,getWidth()/2,this.getHeight()/2);
 		screenW = this.getWidth();
@@ -88,7 +91,8 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
 			@Override
 			public void OnClickListener(Context context, float touchx, float touchy) {
 				super.OnClickListener(context, touchx, touchy);
-				soundPool.play(map.get(ran.nextInt(map.size())), 1, 1, 0, 0, 1);
+				int sound_id = ran.nextInt(sound_list.size());
+				soundPool.play((int)sound_list.get(sound_id), 1, 1, 0, 0, 1);
 			}
 		});
 
