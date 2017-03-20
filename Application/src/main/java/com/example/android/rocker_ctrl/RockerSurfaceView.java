@@ -9,6 +9,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -23,6 +25,10 @@ import com.example.android.bluetoothctrl.BluetoothCtrlService;
 import com.example.android.bluetoothctrl.GlobalConfig;
 import com.example.android.common.VibratorUtil;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
 public class RockerSurfaceView extends SurfaceView implements Callback, Runnable {
 	private SurfaceHolder sfh;
 	private Paint paint;
@@ -36,7 +42,11 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
     CtrlButton btn_light; //灯光按钮
     CtrlButton btn_sound; //声音按钮
 
-    /**
+	private SoundPool soundPool;
+	Map<Integer,Integer> map = new HashMap<Integer, Integer>();
+	Random ran = new Random(System.currentTimeMillis());
+
+	/**
 	 * SurfaceView初始化函数
 	 */
 	public RockerSurfaceView(Context context) {
@@ -47,7 +57,6 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
 		paint.setColor(Color.RED);
 		paint.setAntiAlias(true);
 		setFocusable(true);
-
     }
 
 	//public RockerSurfaceView(Context context, AttributeSet attrs){
@@ -59,14 +68,29 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
 	 */
 //	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
+		//加载图片
 		for (int i = 0; i < carBmp.length; i++) {
 			carBmp[i] = BitmapFactory.decodeResource(this.getResources(), R.drawable.car0 + i);
 		}
+		//加载音效
+		soundPool= new SoundPool(10, AudioManager.STREAM_SYSTEM,5);
+		map.put(1, soundPool.load(getContext(), R.raw.car_laba, 1));
+		map.put(2, soundPool.load(getContext(), R.raw.car_laba2, 1));
+
 		spirit = new GameSpirit(this,getWidth()/2,this.getHeight()/2);
 		screenW = this.getWidth();
 		screenH = this.getHeight();
 		rocker = new Rocker(screenW,screenH);
 		flag = true;
+
+		//精灵被按时发出声音
+		spirit.setListener(new CtrlButtonListener() {
+			@Override
+			public void OnClickListener(Context context, float touchx, float touchy) {
+				super.OnClickListener(context, touchx, touchy);
+				soundPool.play(map.get(ran.nextInt(map.size())), 1, 1, 0, 0, 1);
+			}
+		});
 
         setupCtrButtons();
 
@@ -156,6 +180,8 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
                 } else {
                     btn_light.OnLightBtnClick(getContext(), pointX, pointY);
                     btn_sound.OnLightBtnClick(getContext(), pointX, pointY);
+
+					spirit.beCatched(getContext(), pointX, pointY);
                 }
 			}
 			else if(event.getAction() == MotionEvent.ACTION_MOVE)

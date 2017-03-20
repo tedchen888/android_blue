@@ -1,5 +1,6 @@
 package com.example.android.rocker_ctrl;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -33,9 +34,18 @@ public class GameSpirit {
 		}
 	}
 
-	boolean beCatched(float touchx,float touchy){
+	private  CtrlButtonListener m_listener;
+	public void setListener(CtrlButtonListener listener) {
+		m_listener = listener;
+	}
+
+	boolean beCatched(Context context, float touchx, float touchy){
 		Rect rect = new Rect((int)x,(int)y,(int)(x+width),(int)(y+height));
-		return rect.contains((int)touchx,(int)touchy);
+		if (rect.contains((int)touchx,(int)touchy)) {
+			m_listener.OnClickListener(context, touchx, touchy);
+			return true;
+		}
+		return false;
 	}
 
 	void draw(RockerSurfaceView view, Canvas canvas, Bitmap[] fishBmp, Matrix matrix, float waterY ){
