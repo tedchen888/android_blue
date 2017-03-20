@@ -29,6 +29,7 @@
     <string name="change_uuid">Change UUID</string>
     <string name="rocker_ctrl">Rocker Controller</string>
 
+    <string name="btn_rocker">Rocker</string>
     <string name="btn_up">Up</string>
     <string name="btn_down">Down</string>
     <string name="btn_left">Left</string>

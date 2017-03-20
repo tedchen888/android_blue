@@ -1,5 +1,6 @@
 package com.example.android.rocker_ctrl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -20,6 +21,7 @@ import com.example.android.bluetoothchat.R;
 import com.example.android.bluetoothctrl.AppContexts;
 import com.example.android.bluetoothctrl.BluetoothCtrlService;
 import com.example.android.bluetoothctrl.GlobalConfig;
+import com.example.android.common.VibratorUtil;
 
 public class RockerSurfaceView extends SurfaceView implements Callback, Runnable {
 	private SurfaceHolder sfh;
@@ -28,8 +30,8 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
 	private boolean flag;
 	private Canvas canvas;
 	private int screenW, screenH;
-	private static Bitmap fishBmp[] = new Bitmap[10];
-	Fish fish;
+	private static Bitmap carBmp[] = new Bitmap[10];
+	GameSpirit spirit;
 	Rocker rocker;
     CtrlButton btn_light; //灯光按钮
     CtrlButton btn_sound; //声音按钮
@@ -57,10 +59,10 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
 	 */
 //	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		for (int i = 0; i < fishBmp.length; i++) {
-			fishBmp[i] = BitmapFactory.decodeResource(this.getResources(), R.drawable.fish0 + i);
+		for (int i = 0; i < carBmp.length; i++) {
+			carBmp[i] = BitmapFactory.decodeResource(this.getResources(), R.drawable.car0 + i);
 		}
-		fish = new Fish(this,getWidth()/2,this.getHeight()/2);
+		spirit = new GameSpirit(this,getWidth()/2,this.getHeight()/2);
 		screenW = this.getWidth();
 		screenH = this.getHeight();
 		rocker = new Rocker(screenW,screenH);
@@ -83,7 +85,8 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
             @Override
             public void OnClickListener(Context context, float touchx, float touchy) {
                 super.OnClickListener(context, touchx, touchy);
-                Toast.makeText(context, "on light click", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "on light click", Toast.LENGTH_SHORT).show();
+				VibratorUtil.Vibrate((Activity)context, 100);
                 GlobalConfig.SendBluetoothCmd(GlobalConfig.CMD_LIGHT);
             }
         });
@@ -95,7 +98,8 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
             @Override
             public void OnClickListener(Context context, float touchx, float touchy) {
                 super.OnClickListener(context, touchx, touchy);
-                Toast.makeText(context, "on sound click", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "on sound click", Toast.LENGTH_SHORT).show();
+				VibratorUtil.Vibrate((Activity)context, 100);
                 GlobalConfig.SendBluetoothCmd(GlobalConfig.CMD_SOUND);
             }
         });
@@ -113,7 +117,7 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
 				canvas.drawColor(Color.WHITE);
 				//绘制大圆
 				rocker.draw(canvas);
-				fish.draw(this, canvas, fishBmp, matrix, waterY);
+				spirit.draw(this, canvas, carBmp, matrix, waterY);
 
                 btn_light.draw(canvas);
                 btn_sound.draw(canvas);

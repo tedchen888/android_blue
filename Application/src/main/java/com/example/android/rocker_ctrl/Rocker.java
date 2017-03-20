@@ -29,7 +29,7 @@ public class Rocker {
 		paint.setAntiAlias(true);
 		BigCenterR = screenWidth*rockerR4ScreenWidthPercent;
 		BigCenterX = smallCenterX = screenWidth - BigCenterR*1.5f - rockerCenterXMarginRight4ScreenWidthPercent*screenWidth;
-		BigCenterY = smallCenterY = screenHeight - BigCenterR*1.5f - rockerCenterYMarginBottom4ScreenHeightPercent*screenHeight;
+		BigCenterY = smallCenterY = screenHeight - BigCenterR*1.2f - rockerCenterYMarginBottom4ScreenHeightPercent*screenHeight;
 		smallCenterR = BigCenterR/3;
 	}
 

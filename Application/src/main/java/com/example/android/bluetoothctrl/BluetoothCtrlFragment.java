@@ -52,14 +52,7 @@ public class BluetoothCtrlFragment extends Fragment {
     private EditText mOutEditText;
     private Button mSendButton;
 
-    private Button mBtnUp;
-    private Button mBtnDown;
-    private Button mBtnLeft;
-    private Button mBtnRight;
-    private Button mBtnSpeed;
-    private Button mBtnStop;
-    private Button mBtnLight;
-    private Button mBtnSound;
+    private ImageButton mBtnRocker;
     /**
      * Name of the connected device
      */
@@ -150,14 +143,7 @@ public class BluetoothCtrlFragment extends Fragment {
         mSendButton.requestFocus();
 
 
-        mBtnUp = (Button) view.findViewById(R.id.button_up);
-        mBtnDown = (Button) view.findViewById(R.id.button_down);
-        mBtnLeft = (Button) view.findViewById(R.id.button_left);
-        mBtnRight = (Button) view.findViewById(R.id.button_right);
-        mBtnSpeed = (Button) view.findViewById(R.id.button_speed);
-        mBtnStop = (Button) view.findViewById(R.id.button_stop);
-        mBtnLight = (Button) view.findViewById(R.id.button_light);
-        mBtnSound = (Button) view.findViewById(R.id.button_sound);
+        mBtnRocker = (ImageButton) view.findViewById(R.id.button_rocker);
     }
 
     //控制按键事件类
@@ -206,23 +192,15 @@ public class BluetoothCtrlFragment extends Fragment {
     }
 
     private void setupControler() {
-/*
-        mBtnUp.setOnClickListener(new ControlButtonOnClickListener(GlobalConfig.CMD_UP));
-        mBtnDown.setOnClickListener(new ControlButtonOnClickListener(GlobalConfig.CMD_DOWN));
-        mBtnLeft.setOnClickListener(new ControlButtonOnClickListener(GlobalConfig.CMD_LEFT));
-        mBtnRight.setOnClickListener(new ControlButtonOnClickListener(GlobalConfig.CMD_RIGHT));
-        mBtnSpeed.setOnClickListener(new ControlButtonOnClickListener(GlobalConfig.CMD_SPEED));
-        mBtnStop.setOnClickListener(new ControlButtonOnClickListener(GlobalConfig.CMD_STOP));
-        mBtnLight.setOnClickListener(new ControlButtonOnClickListener(GlobalConfig.CMD_LIGHT));
-        mBtnSound.setOnClickListener(new ControlButtonOnClickListener(GlobalConfig.CMD_SOUND));*/
-        mBtnUp.setOnTouchListener(new ControlButtonOnClickListener(GlobalConfig.CMD_UP, GlobalConfig.CMD_MOVE_STOP));
-        mBtnDown.setOnTouchListener(new ControlButtonOnClickListener(GlobalConfig.CMD_DOWN, GlobalConfig.CMD_MOVE_STOP));
-        mBtnLeft.setOnTouchListener(new ControlButtonOnClickListener(GlobalConfig.CMD_LEFT, GlobalConfig.CMD_RELEASE));
-        mBtnRight.setOnTouchListener(new ControlButtonOnClickListener(GlobalConfig.CMD_RIGHT, GlobalConfig.CMD_RELEASE));
-        mBtnSpeed.setOnTouchListener(new ControlButtonOnClickListener(GlobalConfig.CMD_SPEED, GlobalConfig.CMD_RELEASE));
-        mBtnStop.setOnTouchListener(new ControlButtonOnClickListener(GlobalConfig.CMD_STOP, GlobalConfig.CMD_RELEASE));
-        mBtnLight.setOnTouchListener(new ControlButtonOnClickListener(GlobalConfig.CMD_LIGHT, GlobalConfig.CMD_RELEASE));
-        mBtnSound.setOnTouchListener(new ControlButtonOnClickListener(GlobalConfig.CMD_SOUND, GlobalConfig.CMD_RELEASE));
+        mBtnRocker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 打开虚拟方向键
+                Intent serverIntent = new Intent(getActivity(), VirtualRockerCtrlActivity.class);
+                startActivityForResult(serverIntent, REQUEST_ROCKER_CTRL);
+            }
+        });
+        //mBtnUp.setOnTouchListener(new ControlButtonOnClickListener(GlobalConfig.CMD_UP, GlobalConfig.CMD_MOVE_STOP));
     }
     /**
      * Set up the UI and background operations for chat.
