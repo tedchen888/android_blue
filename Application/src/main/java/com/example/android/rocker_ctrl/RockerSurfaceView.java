@@ -80,6 +80,9 @@ public class RockerSurfaceView extends SurfaceView implements Callback, Runnable
 		sound_list.add(soundPool.load(getContext(), R.raw.car_laba, 1));
 		sound_list.add(soundPool.load(getContext(), R.raw.car_laba2, 1));
 
+		//设置背景图
+		//setBackgroundResource(R.drawable.background);
+
 		spirit = new GameSpirit(this,getWidth()/2,this.getHeight()/2);
 		screenW = this.getWidth();
 		screenH = this.getHeight();
