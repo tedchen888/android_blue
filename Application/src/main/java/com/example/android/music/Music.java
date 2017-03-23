@@ -1,13 +1,22 @@
 package com.example.android.music;
 
 import java.io.File;
+import java.io.IOException;
 
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.util.Log;
 
 public class Music {
+    private static final int FILE_TYPE_ABSOOLUE = 0;
+    private static final int FILE_TYPE_ASSETS = 1;
+
 	private final String UNKNOWN = "Unknown";
-	private File file;
+	private String file_name;
+    private AssetFileDescriptor musicFileDescriptor = null;
+    private int file_type;
 	private String name = UNKNOWN;
 	private String artist = UNKNOWN;
 	private String album = UNKNOWN;
@@ -15,15 +24,25 @@ public class Music {
 	private String duration;
 	private File albumCover;
 	private int time;
-	
+
 	public Music(String filePath) {
-		File file = new File(filePath);
-		if (file.exists()) populateMusicData(file);
-		else Log.w("FileDoesntExist", "Music File at " + filePath + " does not exist.");
+        file_name = filePath;
+        populateMusicData();
 	}
-	
+
+	public Music(AssetManager am, String filePath) {
+        file_name = filePath;
+        file_type = FILE_TYPE_ASSETS;
+        try {
+            musicFileDescriptor = am.openFd(filePath);
+        } catch (Exception e) {
+            Log.d("Music", "open assets file error: " + filePath + " e:" + e.toString());
+        }
+        populateMusicData();
+	}
 	public Music(Music music) {
-		file = music.file;
+        file_name = music.file_name;
+        musicFileDescriptor = music.musicFileDescriptor;
 		name = music.name;
 		artist = music.artist;
 		album = music.album;
@@ -34,11 +53,23 @@ public class Music {
 		Log.d("Music", "Done making the music object with following data: " + toString());
 	}
 	
-	private void populateMusicData(File file) {
+	private void populateMusicData() {
 		MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-		mmr.setDataSource(file.getAbsolutePath());
-		
-		this.file = file;
+
+        if (file_type == FILE_TYPE_ASSETS) {
+            if (null == musicFileDescriptor) {
+                Log.e("Music", "asset file not found!");
+                return;
+            }
+            mmr.setDataSource(musicFileDescriptor.getFileDescriptor(),
+                    musicFileDescriptor.getStartOffset(),
+                    musicFileDescriptor.getLength());
+        } else if (!file_name.isEmpty()) {
+            File file = new File(file_name);
+            if (file.exists()) {
+                mmr.setDataSource(file.getAbsolutePath());
+            }
+        }
 		
 		String name = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
 		String artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
@@ -54,25 +85,33 @@ public class Music {
 		}
 	}
 	
-	public Music(File file, String name, String artist, String album, String duration) {
-		this.file = file;
-		this.name = name;
-		this.artist = artist;
-		this.album = album;
-		this.duration = duration;
-	}
-	
-	public String getMusicLocation() {
-		return file.getAbsolutePath();
-	}
+    public void setMediaPlayerSource(MediaPlayer mMediaPlayer) {
+        try {
+            if (null != musicFileDescriptor) {
+                mMediaPlayer.setDataSource(musicFileDescriptor.getFileDescriptor(),
+                        musicFileDescriptor.getStartOffset(),
+                        musicFileDescriptor.getLength());
+            } else if (!file_name.isEmpty()) {
+                File file = new File(file_name);
+                if (file.exists()) {
+                    mMediaPlayer.setDataSource(file.getAbsolutePath());
+                }
+            }
+        } catch (Exception e) {
+            Log.d("Music", "setDataSource failed. " + file_name + " e:" + e.toString());
+        }
+    }
+	//public String getMusicLocation() {
+	//	return file_name;
+	//}
 	
 	@Override
 	public String toString() {
-		return "Music [file=" + file + ", name=" + name + ", artist=" + artist + ", album=" + album + ", timesPlayed=" + timesPlayed + "]";
+		return "Music [file=" + file_name + ", name=" + name + ", artist=" + artist + ", album=" + album + ", timesPlayed=" + timesPlayed + "]";
 	}
 
-	public File getFile() {
-		return file;
+	public String getFileName() {
+		return file_name;
 	}
 
 	public String getName() {
@@ -95,9 +134,9 @@ public class Music {
 		return albumCover;
 	}
 
-	public String getPlayableFilePath() {
-		return file.getAbsolutePath();
-	}
+//	public String getPlayableFilePath() {
+//		return file.getAbsolutePath();
+//	}
 	
 	public String getDuration() {
 		return duration;
@@ -114,7 +153,8 @@ public class Music {
 		result = prime * result + ((album == null) ? 0 : album.hashCode());
 		result = prime * result + ((artist == null) ? 0 : artist.hashCode());
 		result = prime * result + ((duration == null) ? 0 : duration.hashCode());
-		result = prime * result + ((file == null) ? 0 : file.hashCode());
+		result = prime * result + ((file_name == null) ? 0 : file_name.hashCode());
+        result = prime * result + ((musicFileDescriptor == null) ? 0 : musicFileDescriptor.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -143,10 +183,10 @@ public class Music {
 				return false;
 		} else if (!duration.equals(other.duration))
 			return false;
-		if (file == null) {
-			if (other.file != null)
+		if (file_name == null) {
+			if (other.file_name != null)
 				return false;
-		} else if (!file.equals(other.file))
+		} else if (!file_name.equals(other.file_name))
 			return false;
 		if (name == null) {
 			if (other.name != null)

@@ -22,6 +22,7 @@ import com.example.android.music.SeekBarTextCallback;
 import com.example.android.rocker_ctrl.RockerSurfaceView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by tedchen on 2017/3/18.
@@ -29,6 +30,8 @@ import java.util.ArrayList;
 
 public class VirtualRockerCtrlActivity extends Activity {
     ArrayList<Music> music_library;
+    List<String> filePaths = null;
+
     MusicPlayerService mService;
     MusicPlayerServiceBinder mBinder;
     ServiceConnection mConnection;
@@ -47,6 +50,7 @@ public class VirtualRockerCtrlActivity extends Activity {
         //连接音乐服务，加载音乐，随机播放
         defineServiceConnection();
         bindService(new Intent(this, MusicPlayerService.class), mConnection, Context.BIND_AUTO_CREATE);
+        music_library = new ArrayList<Music>();
         final FileFlattener ff = new FileFlattener();
         createLibrary(ff);
     }
@@ -64,18 +68,19 @@ public class VirtualRockerCtrlActivity extends Activity {
 
             @Override
             protected Void doInBackground(Void... params) {
-                ff.flattenFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Music", 6);
+                //ff.flattenFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Music", 6);
+                ff.getAssetsMusics(VirtualRockerCtrlActivity.this.getAssets(), "mp3");
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void params) {
-                /*filePaths = ff.getFlattenedFiles();
+                filePaths = ff.getFlattenedFiles();
                 Log.d(this.toString(),"Done getting the files from the file flatenner");
 
                 for (String filePath : filePaths) {
-                    music_list.add(new Music(filePath));
-                }*/
+                    music_library.add(new Music(getAssets(),"mp3/" + filePath));
+                }
 
                 if (mBound)
                     initQueue();

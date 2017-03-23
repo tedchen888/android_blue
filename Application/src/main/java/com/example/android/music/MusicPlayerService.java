@@ -1,5 +1,6 @@
 package com.example.android.music;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -28,7 +30,7 @@ public class MusicPlayerService extends Service implements MusicPlayerServiceInt
 	private OnCompletionListener mCompletionListener;
 	
 	private HeadPhoneBroadcastReceiver mHeadPhoneBroadcastReceiver;
-	private SeekBar mSeekBar;
+	//private SeekBar mSeekBar;
 	
 	private AsyncTask<Void, Void, Void> seekBarChanger;
 
@@ -61,12 +63,12 @@ public class MusicPlayerService extends Service implements MusicPlayerServiceInt
 	}
 	
 	public void addMusicToQueue(List<Music> music) {
-		mNowPlaying.addMusicToQueue(music);
+		mNowPlaying.addMusicToQueue(music, true);
 	}
 	
 	public void changeQueue(ArrayList<Music> list) {
 		mNowPlaying.clearQueue();
-		mNowPlaying.addMusicToQueue(list);
+		mNowPlaying.addMusicToQueue(list, true);
 	}
 	
 	public synchronized void play() {
@@ -75,28 +77,31 @@ public class MusicPlayerService extends Service implements MusicPlayerServiceInt
 	}
 	
 	public synchronized void play(int position) {
-		playFetched(mNowPlaying.playGet(position).getMusicLocation());
+		playFetched(mNowPlaying.playGet(position));
 	}
 	
 	public synchronized void playNext() {
-		if(mNowPlaying.next() != null) {
-			playFetched(mNowPlaying.next().getMusicLocation());
+		if(null != mNowPlaying) {
+			playFetched(mNowPlaying.next());
 		}
 	}
 	
-	private synchronized void playFetched(String path) {
+	private synchronized void playFetched(Music music) {
+		if (null == music) {
+			return;
+		}
 		state = PLAYING;
 		mMediaPlayer.stop();
 		mMediaPlayer.reset();
 		try {
-			mMediaPlayer.setDataSource(path);
+			music.setMediaPlayerSource(mMediaPlayer);
 			
 			mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
 				
 				@Override
 				public void onPrepared(MediaPlayer mp) {
 					int totalTime = mNowPlaying.getCurrentlyPlaying().getTime();
-					mSeekBar.setMax(totalTime*1000);
+					//mSeekBar.setMax(totalTime*1000);
 					
 					int minutes = totalTime/60, seconds = totalTime%60;
                 	if (seconds >= 10) mMusicPlayerServiceBinder.setTotalTime("/ " + minutes + ":" + seconds);
@@ -191,11 +196,11 @@ public class MusicPlayerService extends Service implements MusicPlayerServiceInt
 		return true;
 	}
 
-	public void registerSeekBar(SeekBar mSeekBar) {
-		this.mSeekBar = mSeekBar;
-	}
+	//public void registerSeekBar(SeekBar mSeekBar) {
+	//	this.mSeekBar = mSeekBar;
+	//}
 
 	public synchronized void playLast() {
-		playFetched(mNowPlaying.last().getMusicLocation());
+		playFetched(mNowPlaying.last());
 	}
 }
