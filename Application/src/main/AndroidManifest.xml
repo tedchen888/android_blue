@@ -16,7 +16,7 @@
 -->
 
 <manifest
-    package="com.example.android.bluetoothchat"
+    package="com.tedchen.play.game"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionCode="1"
     android:versionName="1.0">
@@ -31,14 +31,14 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name="com.example.android.bluetoothctrl.AppContexts"
+        android:name="com.tedchen.play.bluetoothctrl.AppContexts"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.example.android.bluetoothctrl.MainActivity"
+            android:name="com.tedchen.play.bluetoothctrl.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="landscape">
@@ -49,29 +49,29 @@
         </activity>
 
         <activity
-            android:name="com.example.android.bluetoothctrl.DeviceListActivity"
+            android:name="com.tedchen.play.bluetoothctrl.DeviceListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/select_device"
             android:theme="@android:style/Theme.Holo.Dialog"/>
         <activity
-            android:name="com.example.android.bluetoothctrl.UUIDListActivity"
+            android:name="com.tedchen.play.bluetoothctrl.UUIDListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/select_device"
             android:theme="@android:style/Theme.Holo.Dialog"/>
         <activity
-            android:name="com.example.android.bluetoothctrl.VirtualRockerCtrlActivity"
+            android:name="com.tedchen.play.bluetoothctrl.VirtualRockerCtrlActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_rocker_ctrl"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Holo.Light.DialogWhenLarge"/>
         <activity
-            android:name="com.example.android.game.GameActivity"
+            android:name="com.tedchen.play.game.GameActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_rocker_ctrl"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
 
-        <service android:name="com.example.android.music.MusicPlayerService" >
+        <service android:name="com.tedchen.play.music.MusicPlayerService" >
         </service>
     </application>
 
