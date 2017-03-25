@@ -28,6 +28,7 @@
     <string name="discoverable">Make discoverable</string>
     <string name="change_uuid">Change UUID</string>
     <string name="rocker_ctrl">Rocker Controller</string>
+    <string name="play_game">Game</string>
 
     <string name="btn_rocker">Rocker</string>
     <string name="btn_up">Up</string>

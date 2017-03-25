@@ -64,6 +64,12 @@
             android:label="@string/title_rocker_ctrl"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Holo.Light.DialogWhenLarge"/>
+        <activity
+            android:name="com.example.android.game.GameActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_rocker_ctrl"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
 
         <service android:name="com.example.android.music.MusicPlayerService" >
         </service>

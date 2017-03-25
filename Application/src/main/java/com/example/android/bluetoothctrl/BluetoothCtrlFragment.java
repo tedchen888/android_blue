@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.example.android.bluetoothchat.R;
 import com.example.android.common.VibratorUtil;
 import com.example.android.common.logger.Log;
+import com.example.android.game.GameActivity;
 
 import java.util.UUID;
 
@@ -46,6 +47,7 @@ public class BluetoothCtrlFragment extends Fragment {
     private static final int REQUEST_ENABLE_BT = 3;
     private static final int REQUEST_CHOOSE_UUID = 4;
     private static final int REQUEST_ROCKER_CTRL = 5;
+    private static final int REQUEST_PLAY_GAME = 6;
 
     // Layout Views
     //private ListView mConversationView;
@@ -53,6 +55,8 @@ public class BluetoothCtrlFragment extends Fragment {
     private Button mSendButton;
 
     private ImageButton mBtnRocker;
+    private ImageButton mBtnGamer;
+
     /**
      * Name of the connected device
      */
@@ -144,6 +148,8 @@ public class BluetoothCtrlFragment extends Fragment {
 
 
         mBtnRocker = (ImageButton) view.findViewById(R.id.button_rocker);
+        mBtnGamer = (ImageButton) view.findViewById(R.id.button_game);
+
     }
 
     //控制按键事件类
@@ -198,6 +204,15 @@ public class BluetoothCtrlFragment extends Fragment {
                 // 打开虚拟方向键
                 Intent serverIntent = new Intent(getActivity(), VirtualRockerCtrlActivity.class);
                 startActivityForResult(serverIntent, REQUEST_ROCKER_CTRL);
+            }
+        });
+
+        mBtnGamer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 打开虚拟方向键
+                Intent serverIntent = new Intent(getActivity(), GameActivity.class);
+                startActivityForResult(serverIntent, REQUEST_PLAY_GAME);
             }
         });
         //mBtnUp.setOnTouchListener(new ControlButtonOnClickListener(GlobalConfig.CMD_UP, GlobalConfig.CMD_MOVE_STOP));
